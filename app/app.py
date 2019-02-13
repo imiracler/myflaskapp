@@ -14,13 +14,14 @@ def register_plugin(app):
     from app.models.base import db
     db.init_app(app)
     with app.app_context():
-        db.create_all() #要在app上下文中才能创建db
+         db.create_all()  #要在app上下文中才能创建db
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.secure')
     app.config.from_object('app.config.setting')
+    register_plugin(app)
     reg_bp(app)
     return app
 
