@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models.user import User
 from app.models import db
@@ -23,7 +23,7 @@ def register():
 
         login_user(user, False)
         return "registe success", 201
-    return "false"
+    return "false", 402
 
 
 @user.route('/login', methods=['GET', 'POST'])
@@ -33,6 +33,13 @@ def login():
         user = User.query.filter(User.email==form.email.data).first()
         if user and user.check_passsword(form.password.data):
             login_user(user, remember=True)
-            return user.get_id()
+            return jsonify(token=user.generate_token())
         else:
-            return 'error password or account not exists'
+            return 'error password or account not exists', 401
+
+
+@user.route("/logout", methods=['GET', 'POST'])
+#@login_required
+def logout():
+    logout_user()
+    return "logout success", 203

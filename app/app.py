@@ -4,10 +4,10 @@ from flask_login import LoginManager
 login_manager = LoginManager()
 
 def reg_bp(app):
-    from app.api.book import book
+    from app.api.music import music
     from app.api.user import user
     from app.api.client import client
-    app.register_blueprint(book)
+    app.register_blueprint(music)
     app.register_blueprint(user)
     app.register_blueprint(client)
 
@@ -28,9 +28,9 @@ def create_app():
     register_plugin(app)
 
     # 注册login模块
-    login_manager.init_app(app)
-    login_manager.login_view = 'web.login'
+    login_manager.login_view = 'user.login'
     login_manager.login_message = '请先登录或注册'
+    login_manager.init_app(app)
 
     # 注册蓝图
     reg_bp(app)
