@@ -11,3 +11,4 @@ WTForms==2.2.1
 pymysql
 cos-python-sdk-v5
 qcloud-python-sts
+flask_login
