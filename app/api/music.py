@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, jsonify, request
 from flask_login import login_required, logout_user, current_user
 from sts.sts import Sts
+import random
 
 music = Blueprint("music", __name__)
 
@@ -57,3 +58,59 @@ def get_credential():
     response = sts.get_credential()
     print(type(response))
     return jsonify(response)
+
+
+@music.route("/music/lottery", methods=["POST"])
+def get_lottery_result():
+    import pdb
+    res = request.json
+    data = res["ids"]
+    period = res["periods"]
+    def strategy(data: list):
+        # 两个选一个
+        ten_num = [i for i in range(10)]
+        res = []
+        a = random.choice(data)
+        res.append(a)
+        if data[0] != data[1]:
+            ten_num.remove(data[0])
+            ten_num.remove(data[1])
+        else:
+            ten_num.remove(a)
+        c = random.sample(ten_num, 2)
+        res.append(c[0])
+        res.append(c[1])
+        return res
+
+    def strategy_2():
+        # 随机
+        return random.sample([i for i in range(10)], 3)
+
+    def strategy_3(data: list):
+        # 两个都要
+
+        num = [i for i in range(10)]
+        res = []
+        if data[0] != data[1]:
+            res.append(data[0])
+            res.append(data[1])
+            num.remove(data[0])
+            num.remove(data[1])
+            c = random.sample(num, 1)
+            res.append(c[0])
+        else:
+            res.append(data[0])
+            num.remove(data[0])
+            c = random.sample(num, 2)
+            res.append(c[0])
+            res.append(c[1])
+        return res
+
+    if period % 3 == 0:
+        killedNumber = strategy_3([5, 8] if period == 0 else data)
+    elif period % 3 == 1:
+        killedNumber = strategy_2()
+    else:
+        killedNumber = strategy([2, 4] if period == 0 else data)
+
+    return " ".join([str(i) for i in killedNumber])
