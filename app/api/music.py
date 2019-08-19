@@ -3,12 +3,18 @@ from flask_login import login_required, logout_user, current_user
 from sts.sts import Sts
 import random
 
-music = Blueprint("music", __name__)
+music = Blueprint("music", __name__, template_folder='templates', static_folder='static', static_url_path="/static")
 
 @music.route("/music", methods=["GET"])
 @login_required
 def get_book():
     return "this is my first book"
+
+
+@music.route('/', defaults={'path': ''})
+@music.route('/<path:path>')
+def index(path):
+  return render_template('index.html')
 
 
 @music.route("/music/secret", methods=["GET"])
@@ -113,4 +119,4 @@ def get_lottery_result():
     else:
         killedNumber = strategy([2, 4] if period == 0 else data)
 
-    return " ".join([str(i) for i in killedNumber])
+    return jsonify({"data":killedNumber})
