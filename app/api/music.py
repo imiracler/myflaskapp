@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, render_template
 from flask_login import login_required, logout_user, current_user
 from sts.sts import Sts
 import random
